@@ -1,0 +1,56 @@
+# ----------------------------------------------------------------
+# Author:
+# Date:
+#
+# This module calculates and displays billing information
+# for students in the class registration system.  Student and
+# class records are reviewed and tuition fees are calculated.
+# -----------------------------------------------------------------
+import datetime
+
+
+def display_bill(s_id, s_in_state, c_rosters, c_hours):
+    # ------------------------------------------------------------
+    # This function displays the student's bill. It takes four
+    # parameters: s_id, the student id; s_in_state, the list of
+    # in-state students; c_rosters, the rosters of students in
+    # each course; c_hours, the number of hours in each course.
+    # The function has no return value.
+    # ------------------------------------------------------------
+
+    # Check if the student is in-state or out-of-state
+    in_state = s_in_state.get(s_id, False)
+
+    # Set the tuition cost based on the student's residency
+    if in_state:
+        tuition_per_hour = 225  # In-state tuition cost per credit hour
+    else:
+        tuition_per_hour = 850  # Out-of-state tuition cost per credit hour
+
+    # Display the tuition bill header
+    print("\nTuition Summary")
+    print(f"Student: {s_id}, {'In-State' if in_state else 'Out-of-State'}")
+
+    # Display the current date and time using the datetime library
+    now = datetime.datetime.now()
+    print(now.strftime("%b %d, %Y at %I:%M %p"))
+
+    # Display the table header
+    print("{:<10} {:<8} {:<13}".format("Course", "Hours", "Cost"))
+    print("{:<10} {:<8} {:<13}".format("------", "-----", "---------"))
+
+    total_hours = 0
+    total_cost = 0
+
+    # Display the details for each course the student is enrolled in
+    for course, hours in c_hours.items():
+        if s_id in c_rosters.get(course, []):
+            hours = c_hours.get(course, 0)
+            cost = hours * tuition_per_hour
+            total_hours += hours
+            total_cost += cost
+
+            print("{:<10} {:<8} ${:,.2f}".format(course, hours, cost))
+    # Display the total row
+    print("{:<10} {:<8} {:<13}".format("------", "-----", "---------"))
+    print("{:<10} {:<8} ${:,.2f}".format("Total", total_hours, total_cost))
